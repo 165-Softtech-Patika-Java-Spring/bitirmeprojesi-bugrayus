@@ -30,11 +30,13 @@ public abstract class BaseModel implements Cloneable, Serializable {
     @LastModifiedDate
     private Date updatedDate;
 
+    @OneToOne
     @CreatedBy
-    private String createdBy;
+    private User createdBy;
 
+    @OneToOne
     @LastModifiedBy
-    private String updatedBy;
+    private User updatedBy;
 
     @Override
     public BaseModel clone() {

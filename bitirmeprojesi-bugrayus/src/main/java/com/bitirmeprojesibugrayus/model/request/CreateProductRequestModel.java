@@ -7,6 +7,6 @@ import java.math.BigDecimal;
 @Data
 public class CreateProductRequestModel {
     String name;
-    int categoryId;
+    long categoryId;
     BigDecimal priceWithoutTax;
 }

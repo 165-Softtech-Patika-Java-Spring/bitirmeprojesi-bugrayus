@@ -89,11 +89,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**",
+                .antMatchers("/auth/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/swagger/**",
-                        "/h2-console/**",
                         "/swagger.html",
                         "/v3/api-docs/**"
                 )
@@ -101,11 +100,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
         httpSecurity.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
-        web.ignoring().mvcMatchers("/swagger", "/swagger/**", "/swagger.html", "/swagger.html/**", "/swagger-ui.html", "/swagger-ui/**", "/configuration/**", "/swagger-resources/**", "/v3/api-docs", "/webjars/**");
     }
 }

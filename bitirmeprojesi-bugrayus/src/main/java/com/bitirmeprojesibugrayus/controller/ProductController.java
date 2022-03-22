@@ -1,8 +1,18 @@
 package com.bitirmeprojesibugrayus.controller;
 
+import com.bitirmeprojesibugrayus.core.model.ApiResponse;
+import com.bitirmeprojesibugrayus.model.request.CreateCategoryRequestModel;
+import com.bitirmeprojesibugrayus.model.request.CreateProductRequestModel;
+import com.bitirmeprojesibugrayus.model.request.UpdateProductRequestModel;
+import com.bitirmeprojesibugrayus.model.response.CategoryResponseModel;
+import com.bitirmeprojesibugrayus.model.response.ProductResponseModel;
+import com.bitirmeprojesibugrayus.service.CategoryService;
 import com.bitirmeprojesibugrayus.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -10,28 +20,28 @@ public class ProductController {
 
     private final ProductService productService;
 
-//    @GetMapping("/product/{id}")
-//    public ProductResponseModel getProduct(@PathVariable int id) {
-//        return productService.getProduct(id);
-//    }
-//
-//    @PostMapping("/product")
-//    public boolean createProduct(@RequestBody CreateProductRequestModel requestModel) {
-//        return productService.createProduct(requestModel);
-//    }
-//
-//    @GetMapping("/products")
-//    public List<ProductResponseModel> getProducts() {
-//        return productService.getProducts();
-//    }
-//
-//    @PutMapping("/product")
-//    public boolean updateProduct(@RequestBody UpdateProductRequestModel requestModel) {
-//        return productService.updateProduct(requestModel);
-//    }
-//
-//    @DeleteMapping("/product/{id}")
-//    public boolean deleteProduct(@PathVariable long id) {
-//        return productService.deleteProduct(id);
-//    }
+    @PostMapping("/product")
+    public ResponseEntity<ApiResponse<Boolean>> createProduct(@RequestBody CreateProductRequestModel requestModel) {
+        return ResponseEntity.ok(ApiResponse.of(productService.createProduct(requestModel)));
+    }
+
+    @GetMapping("/product")
+    public ResponseEntity<ApiResponse<List<ProductResponseModel>>> findAllProducts() {
+        return ResponseEntity.ok(ApiResponse.of(productService.findAllProducts()));
+    }
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<ApiResponse<ProductResponseModel>> findProductById(@PathVariable long id) {
+        return ResponseEntity.ok(ApiResponse.of(productService.findProductById(id)));
+    }
+
+    @PutMapping("/product")
+    public ResponseEntity<ApiResponse<Boolean>> updateProduct(@RequestBody UpdateProductRequestModel requestModel) {
+        return ResponseEntity.ok(ApiResponse.of(productService.updateProduct(requestModel)));
+    }
+
+    @DeleteMapping("/product/{id}")
+    public ResponseEntity<ApiResponse<Boolean>> deleteProduct(@PathVariable long id) {
+        return ResponseEntity.ok(ApiResponse.of(productService.deleteProduct(id)));
+    }
 }
