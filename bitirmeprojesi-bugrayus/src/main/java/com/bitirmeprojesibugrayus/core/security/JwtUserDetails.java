@@ -27,7 +27,7 @@ public class JwtUserDetails implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static JwtUserDetails create(User user){
+    public static JwtUserDetails create(User user) {
 
         Long id = user.getId();
         String username = user.getUsername();

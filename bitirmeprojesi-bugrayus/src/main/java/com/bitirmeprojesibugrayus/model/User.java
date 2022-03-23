@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@Table(name="\"user\"")
+@Table(name = "\"user\"")
 @ToString
 @RequiredArgsConstructor
 public class User extends BaseModel {

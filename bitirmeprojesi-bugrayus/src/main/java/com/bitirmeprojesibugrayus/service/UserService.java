@@ -1,6 +1,5 @@
 package com.bitirmeprojesibugrayus.service;
 
-import com.bitirmeprojesibugrayus.core.security.JwtUserDetailsService;
 import com.bitirmeprojesibugrayus.model.User;
 import com.bitirmeprojesibugrayus.model.request.CreateUserRequestModel;
 import com.bitirmeprojesibugrayus.model.request.UpdateUserRequestModel;

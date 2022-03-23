@@ -1,13 +1,9 @@
 package com.bitirmeprojesibugrayus.controller;
 
-import com.bitirmeprojesibugrayus.core.model.ApiResponse;
-import com.bitirmeprojesibugrayus.model.request.CreateUserRequestModel;
-import com.bitirmeprojesibugrayus.model.request.LoginRequestModel;
 import com.bitirmeprojesibugrayus.model.request.UpdateUserRequestModel;
 import com.bitirmeprojesibugrayus.model.response.UserResponseModel;
 import com.bitirmeprojesibugrayus.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

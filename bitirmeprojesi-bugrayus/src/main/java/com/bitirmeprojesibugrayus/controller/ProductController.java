@@ -1,12 +1,9 @@
 package com.bitirmeprojesibugrayus.controller;
 
 import com.bitirmeprojesibugrayus.core.model.ApiResponse;
-import com.bitirmeprojesibugrayus.model.request.CreateCategoryRequestModel;
 import com.bitirmeprojesibugrayus.model.request.CreateProductRequestModel;
 import com.bitirmeprojesibugrayus.model.request.UpdateProductRequestModel;
-import com.bitirmeprojesibugrayus.model.response.CategoryResponseModel;
 import com.bitirmeprojesibugrayus.model.response.ProductResponseModel;
-import com.bitirmeprojesibugrayus.service.CategoryService;
 import com.bitirmeprojesibugrayus.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
