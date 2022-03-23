@@ -23,7 +23,11 @@ public class CusCustomerEntityService extends BaseEntityService<User, UserReposi
         return getDao().findAll();
     }
 
-    public User findByIdentityNo(Long identityNo) {
-        return getDao().getUserById(identityNo);
+    public User findByIdentityNo(String identityNo) {
+        return getDao().findByUsername(identityNo);
+    }
+
+    public User getByIdWithControl(Long id) {
+        return getDao().getUserById(id);
     }
 }

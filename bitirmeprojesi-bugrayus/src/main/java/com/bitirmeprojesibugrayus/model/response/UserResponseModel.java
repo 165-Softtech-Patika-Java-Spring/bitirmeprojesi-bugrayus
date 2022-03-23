@@ -8,5 +8,4 @@ public class UserResponseModel {
     String name;
     String surname;
     String username;
-    String password;
 }

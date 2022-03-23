@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper mapper;
+    private final AuthenticationService authenticationService;
 
     public ProductResponseModel findProductById(long id) {
         if (!productRepository.existsById(id))
@@ -30,12 +32,16 @@ public class ProductService {
     }
 
     public boolean createProduct(CreateProductRequestModel requestModel) {
+        if (requestModel.getPriceWithoutTax().compareTo(BigDecimal.ZERO) <= 0)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         Product product = new Product();
         Category category = categoryRepository.getById(requestModel.getCategoryId());
-        product.setPrice(requestModel.getPriceWithoutTax().add(category.getKDV().multiply(requestModel.getPriceWithoutTax())));
+        product.setPrice(requestModel.getPriceWithoutTax().add(category.getKDV().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100))));
         product.setCategory(category);
-        product.setTax(category.getKDV().multiply(requestModel.getPriceWithoutTax()));
+        product.setTax(category.getKDV().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100)));
         product.setName(requestModel.getName());
+        product.setCreatedBy(authenticationService.getCurrentUser());
+        product.setUpdatedBy(authenticationService.getCurrentUser());
         productRepository.save(product);
         return true;
     }
@@ -56,8 +62,21 @@ public class ProductService {
         if (!productRepository.existsById(requestModel.getId()))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found by that id");
         Product product = productRepository.getById(requestModel.getId());
-        product.setPrice(requestModel.getPrice());
+        Category category = categoryRepository.getById(requestModel.getCategoryId());
+        product.setPrice(requestModel.getPriceWithoutTax().add(category.getKDV().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100))));
+        product.setCategory(category);
+        product.setTax(category.getKDV().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100)));
+        product.setName(requestModel.getName());
+        product.setUpdatedBy(authenticationService.getCurrentUser());
         productRepository.save(product);
         return true;
+    }
+
+    public List<ProductResponseModel> findProductByCategory(long categoryId) {
+        return productRepository.findProductByCategoryId(categoryId).stream().map(product -> mapper.map(product, ProductResponseModel.class)).collect(Collectors.toList());
+    }
+
+    public List<ProductResponseModel> findProductByPriceBetween(BigDecimal priceLow, BigDecimal priceHigh) {
+        return productRepository.findProductByPriceBetween(priceLow, priceHigh).stream().map(product -> mapper.map(product, ProductResponseModel.class)).collect(Collectors.toList());
     }
 }

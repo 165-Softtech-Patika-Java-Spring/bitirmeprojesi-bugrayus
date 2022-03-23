@@ -1,5 +1,6 @@
 package com.bitirmeprojesibugrayus.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -25,17 +26,21 @@ public abstract class BaseModel implements Cloneable, Serializable {
     private Long id;
 
     @CreatedDate
+    @JsonIgnore
     private Date createdDate;
 
     @LastModifiedDate
+    @JsonIgnore
     private Date updatedDate;
 
     @OneToOne
     @CreatedBy
+    @JsonIgnore
     private User createdBy;
 
     @OneToOne
     @LastModifiedBy
+    @JsonIgnore
     private User updatedBy;
 
     @Override

@@ -9,12 +9,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author Bahadır Memiş
+ * @since 1.0.0
+ */
 public class JwtUserDetails implements UserDetails {
 
-    private final Long id;
-    private final String username;
-    private final String password;
-    private final Collection<? extends GrantedAuthority> authorities;
+    private Long id;
+    private String username;
+    private String password;
+    private Collection<? extends GrantedAuthority> authorities;
 
     private JwtUserDetails(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
@@ -23,7 +27,7 @@ public class JwtUserDetails implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static JwtUserDetails create(User user) {
+    public static JwtUserDetails create(User user){
 
         Long id = user.getId();
         String username = user.getUsername();

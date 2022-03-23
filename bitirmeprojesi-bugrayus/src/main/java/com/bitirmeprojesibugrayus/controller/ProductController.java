@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -30,9 +31,19 @@ public class ProductController {
         return ResponseEntity.ok(ApiResponse.of(productService.findAllProducts()));
     }
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/product/id/{id}")
     public ResponseEntity<ApiResponse<ProductResponseModel>> findProductById(@PathVariable long id) {
         return ResponseEntity.ok(ApiResponse.of(productService.findProductById(id)));
+    }
+
+    @GetMapping("/product/category/{categoryId}")
+    public ResponseEntity<ApiResponse<List<ProductResponseModel>>> findProductByCategory(@PathVariable long categoryId) {
+        return ResponseEntity.ok(ApiResponse.of(productService.findProductByCategory(categoryId)));
+    }
+
+    @GetMapping("/product/priceBetween")
+    public ResponseEntity<ApiResponse<List<ProductResponseModel>>> findProductByCategory(@RequestParam BigDecimal priceLow, BigDecimal priceHigh) {
+        return ResponseEntity.ok(ApiResponse.of(productService.findProductByPriceBetween(priceLow, priceHigh)));
     }
 
     @PutMapping("/product")

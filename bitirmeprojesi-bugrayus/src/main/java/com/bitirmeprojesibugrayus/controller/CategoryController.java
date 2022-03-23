@@ -3,6 +3,7 @@ package com.bitirmeprojesibugrayus.controller;
 import com.bitirmeprojesibugrayus.core.model.ApiResponse;
 import com.bitirmeprojesibugrayus.model.request.CreateCategoryRequestModel;
 import com.bitirmeprojesibugrayus.model.request.UpdateCategoryRequestModel;
+import com.bitirmeprojesibugrayus.model.response.CategoryDetailsResponseModel;
 import com.bitirmeprojesibugrayus.model.response.CategoryResponseModel;
 import com.bitirmeprojesibugrayus.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,11 @@ public class CategoryController {
     @GetMapping("/category/{id}")
     public ResponseEntity<ApiResponse<CategoryResponseModel>> findCategoryById(@PathVariable long id) {
         return ResponseEntity.ok(ApiResponse.of(categoryService.findCategoryById(id)));
+    }
+
+    @GetMapping("/category/details")
+    public ResponseEntity<ApiResponse<List<CategoryDetailsResponseModel>>> findCategoryDetails() {
+        return ResponseEntity.ok(ApiResponse.of(categoryService.findCategoryDetails()));
     }
 
     @PutMapping("/category")

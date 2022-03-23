@@ -10,13 +10,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+/**
+ * @author Bahadır Memiş
+ * @since 1.0.0
+ */
 @Component
 public class JwtTokenGenerator {
 
-    @Value("SOFTTECH")
+    @Value("softtech")
     private String APP_KEY;
 
-    @Value("86400000")
+    @Value("860000")
     private Long EXPIRE_TIME;
 
     public String generateJwtToken(Authentication authentication) {

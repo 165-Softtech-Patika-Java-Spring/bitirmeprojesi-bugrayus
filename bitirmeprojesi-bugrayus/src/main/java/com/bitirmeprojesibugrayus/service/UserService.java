@@ -1,5 +1,6 @@
 package com.bitirmeprojesibugrayus.service;
 
+import com.bitirmeprojesibugrayus.core.security.JwtUserDetailsService;
 import com.bitirmeprojesibugrayus.model.User;
 import com.bitirmeprojesibugrayus.model.request.CreateUserRequestModel;
 import com.bitirmeprojesibugrayus.model.request.UpdateUserRequestModel;
@@ -23,12 +24,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper mapper;
     private final PasswordEncoder passwordEncoder;
+//    private final AuthenticationService authenticationService;
 
     public boolean createUser(CreateUserRequestModel requestModel) {
         if (userRepository.existsByUsername(requestModel.getUsername()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Category already exists.");
 //        mapper.getConfiguration().setAmbiguityIgnored(true);
         User user = mapper.map(requestModel, User.class);
+//        user.setCreatedBy(authenticationService.getCurrentUser());
+//        user.setUpdatedBy(authenticationService.getCurrentUser());
         user.setPassword(passwordEncoder.encode(requestModel.getPassword()));
         userRepository.save(user);
         return true;
@@ -58,7 +62,11 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found by that id");
         User user = userRepository.getById(requestModel.getId());
         mapper.map(requestModel, user);
+        user.setPassword(passwordEncoder.encode(requestModel.getPassword()));
+//        user.setUpdatedBy(authenticationService.getCurrentUser());
         userRepository.save(user);
         return true;
     }
+
+
 }

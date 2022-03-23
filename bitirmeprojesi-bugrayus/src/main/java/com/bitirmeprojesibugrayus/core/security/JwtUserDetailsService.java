@@ -1,8 +1,8 @@
 package com.bitirmeprojesibugrayus.core.security;
 
 import com.bitirmeprojesibugrayus.model.User;
-import com.bitirmeprojesibugrayus.repository.UserRepository;
 import com.bitirmeprojesibugrayus.service.CusCustomerEntityService;
+import com.bitirmeprojesibugrayus.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,16 +17,16 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Long identityNo = Long.valueOf(username);
 
-        User user = cusCustomerEntityService.findByIdentityNo(identityNo);
+        User cusCustomer = cusCustomerEntityService.findByIdentityNo(username);
 
-        return JwtUserDetails.create(user);
+        return JwtUserDetails.create(cusCustomer);
     }
 
     public UserDetails loadUserByUserId(Long id) {
-        User user = cusCustomerEntityService.getByIdWithControl(id);
 
-        return JwtUserDetails.create(user);
+        User cusCustomer = cusCustomerEntityService.getByIdWithControl(id);
+
+        return JwtUserDetails.create(cusCustomer);
     }
 }

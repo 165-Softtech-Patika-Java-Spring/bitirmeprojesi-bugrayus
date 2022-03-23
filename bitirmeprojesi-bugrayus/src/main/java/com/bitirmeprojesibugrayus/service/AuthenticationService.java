@@ -5,7 +5,6 @@ import com.bitirmeprojesibugrayus.core.security.JwtUserDetails;
 import com.bitirmeprojesibugrayus.model.User;
 import com.bitirmeprojesibugrayus.model.request.CreateUserRequestModel;
 import com.bitirmeprojesibugrayus.model.request.LoginRequestModel;
-import com.bitirmeprojesibugrayus.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,8 +25,7 @@ public class AuthenticationService {
     private final JwtTokenGenerator jwtTokenGenerator;
 
     public boolean register(CreateUserRequestModel requestModel) {
-        userService.createUser(requestModel);
-        return true;
+        return userService.createUser(requestModel);
     }
 
     public String login(LoginRequestModel requestModel) {
