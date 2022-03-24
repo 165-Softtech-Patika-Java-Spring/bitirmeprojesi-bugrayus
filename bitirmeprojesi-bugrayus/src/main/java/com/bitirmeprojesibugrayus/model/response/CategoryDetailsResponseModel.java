@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Data
 public class CategoryDetailsResponseModel {
     String categoryName;
-    BigDecimal tax;
+    BigDecimal taxPercent;
     BigDecimal minimumPrice;
     BigDecimal maximumPrice;
     BigDecimal averagePrice;

@@ -23,35 +23,30 @@ public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper mapper;
     private final PasswordEncoder passwordEncoder;
-//    private final AuthenticationService authenticationService;
 
     public boolean createUser(CreateUserRequestModel requestModel) {
         if (userRepository.existsByUsername(requestModel.getUsername()))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Category already exists.");
-//        mapper.getConfiguration().setAmbiguityIgnored(true);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists.");
         User user = mapper.map(requestModel, User.class);
-//        user.setCreatedBy(authenticationService.getCurrentUser());
-//        user.setUpdatedBy(authenticationService.getCurrentUser());
         user.setPassword(passwordEncoder.encode(requestModel.getPassword()));
         userRepository.save(user);
         return true;
     }
 
-    public UserResponseModel getUser(long id) {
+    public UserResponseModel findUserById(long id) {
         if (!userRepository.existsById(id))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist.");
+            return null;
         return mapper.map(userRepository.getById(id), UserResponseModel.class);
     }
 
-    public List<UserResponseModel> getUsers() {
+    public List<UserResponseModel> findUsers() {
         List<User> users = userRepository.findAll();
         return users.stream().map(x -> mapper.map(x, UserResponseModel.class)).collect(Collectors.toList());
     }
 
-
     public boolean deleteUser(long id) {
         if (!userRepository.existsById(id))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found  by that id.");
         userRepository.delete(userRepository.getUserById(id));
         return true;
     }
@@ -62,7 +57,6 @@ public class UserService {
         User user = userRepository.getById(requestModel.getId());
         mapper.map(requestModel, user);
         user.setPassword(passwordEncoder.encode(requestModel.getPassword()));
-//        user.setUpdatedBy(authenticationService.getCurrentUser());
         userRepository.save(user);
         return true;
     }

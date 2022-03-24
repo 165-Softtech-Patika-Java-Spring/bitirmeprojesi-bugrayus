@@ -18,5 +18,5 @@ import java.math.BigDecimal;
 @EntityListeners(AuditingEntityListener.class)
 public class Category extends BaseModel {
     String name;
-    BigDecimal KDV;
+    BigDecimal taxPercent;
 }

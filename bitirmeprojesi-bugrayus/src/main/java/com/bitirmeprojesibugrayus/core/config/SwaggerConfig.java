@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 @Configuration
 public class SwaggerConfig {
 
-    @Value("Deneme")
+    @Value("Sofftech")
     private String APP_TITLE;
 
     @Bean

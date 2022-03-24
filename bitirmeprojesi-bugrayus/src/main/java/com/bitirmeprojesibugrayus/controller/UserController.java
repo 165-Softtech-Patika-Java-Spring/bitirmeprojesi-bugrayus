@@ -1,38 +1,46 @@
 package com.bitirmeprojesibugrayus.controller;
 
+import com.bitirmeprojesibugrayus.core.model.ApiResponse;
 import com.bitirmeprojesibugrayus.model.request.UpdateUserRequestModel;
 import com.bitirmeprojesibugrayus.model.response.UserResponseModel;
 import com.bitirmeprojesibugrayus.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/user/{id}")
-    public UserResponseModel findUserById(@PathVariable int id) {
-        return userService.getUser(id);
+    @GetMapping("/user/id/{id}")
+    public ResponseEntity<ApiResponse<UserResponseModel>> findUserById(@PathVariable int id) {
+        return ResponseEntity.ok(ApiResponse.of(
+                userService.findUserById(id)
+        ));
     }
 
     @GetMapping("/users")
-    public List<UserResponseModel> findUsers() {
-        return userService.getUsers();
+    public ResponseEntity<ApiResponse<List<UserResponseModel>>> findUsers() {
+        return ResponseEntity.ok(ApiResponse.of(
+                userService.findUsers()
+        ));
     }
-
 
     @PutMapping("/user")
-    public boolean updateUser(@RequestBody UpdateUserRequestModel requestModel) {
-        return userService.updateUser(requestModel);
+    public ResponseEntity<ApiResponse<Boolean>> updateUser(@RequestBody UpdateUserRequestModel requestModel) {
+        return ResponseEntity.ok(ApiResponse.of(
+                userService.updateUser(requestModel)
+        ));
     }
 
-    @DeleteMapping("/user/{id}")
-    public boolean deleteUser(@PathVariable long id) {
-        return userService.deleteUser(id);
+    @DeleteMapping("/user/id/{id}")
+    public ResponseEntity<ApiResponse<Boolean>> deleteUser(@PathVariable long id) {
+        return ResponseEntity.ok(ApiResponse.of(
+                userService.deleteUser(id)
+        ));
     }
 }

@@ -30,7 +30,7 @@ public class CategoryService {
     private final AuthenticationService authenticationService;
 
     public boolean createCategory(CreateCategoryRequestModel requestModel) {
-        if (requestModel.getKDV().compareTo(BigDecimal.ZERO) < 0)
+        if (requestModel.getTaxPercent().compareTo(BigDecimal.ZERO) < 0)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tax cannot be less than 0");
         if (categoryRepository.existsByName(requestModel.getName()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Category already exists.");
@@ -42,8 +42,11 @@ public class CategoryService {
     }
 
     public List<CategoryResponseModel> findAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
-        return categories.stream().map(x -> mapper.map(x, CategoryResponseModel.class)).collect(Collectors.toList());
+        return categoryRepository
+                .findAll()
+                .stream()
+                .map(x -> mapper.map(x, CategoryResponseModel.class))
+                .collect(Collectors.toList());
     }
 
     public CategoryResponseModel findCategoryById(long id) {
@@ -54,17 +57,17 @@ public class CategoryService {
 
     public boolean updateCategory(UpdateCategoryRequestModel requestModel) {
         if (!categoryRepository.existsById(requestModel.getId()))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found by that id");
-        if (categoryRepository.existsByName(requestModel.getName()))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Category already exists.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found by that id");
         Category category = categoryRepository.getById(requestModel.getId());
-        if (!Objects.equals(category.getKDV(), requestModel.getKDV())) {
+        if (!Objects.equals(category.getName(), requestModel.getName()) && categoryRepository.existsByName(requestModel.getName()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Category already exists.");
+        if (!Objects.equals(category.getTaxPercent(), requestModel.getTaxPercent())) {
             List<Product> products = productRepository.findProductByCategoryId(category.getId());
             for (Product product :
                     products) {
                 BigDecimal priceWithoutTax = product.getPrice().subtract(product.getTax());
-                product.setPrice(priceWithoutTax.add(requestModel.getKDV().multiply(priceWithoutTax).divide(BigDecimal.valueOf(100))));
-                product.setTax(requestModel.getKDV().multiply(priceWithoutTax).divide(BigDecimal.valueOf(100)));
+                product.setPrice(priceWithoutTax.add(requestModel.getTaxPercent().multiply(priceWithoutTax).divide(BigDecimal.valueOf(100), RoundingMode.HALF_EVEN)));
+                product.setTax(requestModel.getTaxPercent().multiply(priceWithoutTax).divide(BigDecimal.valueOf(100), RoundingMode.HALF_EVEN));
                 productRepository.save(product);
             }
         }
@@ -76,7 +79,9 @@ public class CategoryService {
 
     public boolean deleteCategory(long id) {
         if (!categoryRepository.existsById(id))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found by that id");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found by that id");
+        if (productRepository.existsByCategoryId(id))
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Category has products, it cannot be deleted.");
         categoryRepository.deleteById(id);
         return true;
     }
@@ -93,11 +98,15 @@ public class CategoryService {
             BigDecimal minPrice =
                     products
                             .stream()
-                            .min(Comparator.comparing(Product::getPrice)).orElseThrow(NoSuchElementException::new).getPrice();
+                            .min(Comparator.comparing(Product::getPrice))
+                            .orElseThrow(NoSuchElementException::new)
+                            .getPrice();
             BigDecimal maxPrice =
                     products
                             .stream()
-                            .max(Comparator.comparing(Product::getPrice)).orElseThrow(NoSuchElementException::new).getPrice();
+                            .max(Comparator.comparing(Product::getPrice))
+                            .orElseThrow(NoSuchElementException::new)
+                            .getPrice();
             BigDecimal[] bigDecimals =
                     products
                             .stream()
@@ -105,17 +114,16 @@ public class CategoryService {
                             .filter(Objects::nonNull)
                             .map(bd -> new BigDecimal[]{bd, BigDecimal.ONE})
                             .reduce((a, b) -> new BigDecimal[]{a[0].add(b[0]), a[1].add(BigDecimal.ONE)})
-                            .get();
-            BigDecimal averagePrice = bigDecimals[0].divide(bigDecimals[1], RoundingMode.HALF_UP);
-
+                            .orElse(null);
+            assert bigDecimals != null;
+            BigDecimal averagePrice = bigDecimals[0].divide(bigDecimals[1], RoundingMode.HALF_EVEN);
             int productCount = products.size();
-
             CategoryDetailsResponseModel responseModel = new CategoryDetailsResponseModel();
             responseModel.setCategoryName(category.getName());
             responseModel.setMinimumPrice(minPrice);
             responseModel.setMaximumPrice(maxPrice);
             responseModel.setAveragePrice(averagePrice);
-            responseModel.setTax(category.getKDV());
+            responseModel.setTaxPercent(category.getTaxPercent());
             responseModel.setProductCount(productCount);
             categoryDetails.add(responseModel);
         }

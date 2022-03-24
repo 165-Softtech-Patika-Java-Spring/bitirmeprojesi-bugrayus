@@ -1,5 +1,6 @@
 package com.bitirmeprojesibugrayus.model.response;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -8,5 +9,5 @@ import java.math.BigDecimal;
 public class CategoryResponseModel {
     Long id;
     String name;
-    BigDecimal KDV;
+    BigDecimal taxPercent;
 }

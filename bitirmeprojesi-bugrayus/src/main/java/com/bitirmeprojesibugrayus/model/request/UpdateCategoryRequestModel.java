@@ -8,5 +8,5 @@ import java.math.BigDecimal;
 public class UpdateCategoryRequestModel {
     Long id;
     String name;
-    BigDecimal KDV;
+    BigDecimal taxPercent;
 }

@@ -19,31 +19,43 @@ public class CategoryController {
 
     @PostMapping("/category")
     public ResponseEntity<ApiResponse<Boolean>> createCategory(@RequestBody CreateCategoryRequestModel requestModel) {
-        return ResponseEntity.ok(ApiResponse.of(categoryService.createCategory(requestModel)));
+        return ResponseEntity.ok(ApiResponse.of(
+                categoryService.createCategory(requestModel)
+        ));
     }
 
     @GetMapping("/category")
     public ResponseEntity<ApiResponse<List<CategoryResponseModel>>> findAllCategories() {
-        return ResponseEntity.ok(ApiResponse.of(categoryService.findAllCategories()));
+        return ResponseEntity.ok(ApiResponse.of(
+                categoryService.findAllCategories()
+        ));
     }
 
-    @GetMapping("/category/{id}")
+    @GetMapping("/category/id/{id}")
     public ResponseEntity<ApiResponse<CategoryResponseModel>> findCategoryById(@PathVariable long id) {
-        return ResponseEntity.ok(ApiResponse.of(categoryService.findCategoryById(id)));
+        return ResponseEntity.ok(ApiResponse.of(
+                categoryService.findCategoryById(id)
+        ));
     }
 
     @GetMapping("/category/details")
     public ResponseEntity<ApiResponse<List<CategoryDetailsResponseModel>>> findCategoryDetails() {
-        return ResponseEntity.ok(ApiResponse.of(categoryService.findCategoryDetails()));
+        return ResponseEntity.ok(ApiResponse.of(
+                categoryService.findCategoryDetails()
+        ));
     }
 
     @PutMapping("/category")
     public ResponseEntity<ApiResponse<Boolean>> updateCategory(@RequestBody UpdateCategoryRequestModel requestModel) {
-        return ResponseEntity.ok(ApiResponse.of(categoryService.updateCategory(requestModel)));
+        return ResponseEntity.ok(ApiResponse.of(
+                categoryService.updateCategory(requestModel)
+        ));
     }
 
-    @DeleteMapping("/category/{id}")
+    @DeleteMapping("/category/id/{id}")
     public ResponseEntity<ApiResponse<Boolean>> deleteCategory(@PathVariable long id) {
-        return ResponseEntity.ok(ApiResponse.of(categoryService.deleteCategory(id)));
+        return ResponseEntity.ok(ApiResponse.of(
+                categoryService.deleteCategory(id)
+        ));
     }
 }

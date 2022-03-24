@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,12 +34,12 @@ public class ProductService {
 
     public boolean createProduct(CreateProductRequestModel requestModel) {
         if (requestModel.getPriceWithoutTax().compareTo(BigDecimal.ZERO) <= 0)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product cannot be less or equal to 0");
         Product product = new Product();
         Category category = categoryRepository.getById(requestModel.getCategoryId());
-        product.setPrice(requestModel.getPriceWithoutTax().add(category.getKDV().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100))));
+        product.setPrice(requestModel.getPriceWithoutTax().add(category.getTaxPercent().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100), RoundingMode.HALF_EVEN)));
         product.setCategory(category);
-        product.setTax(category.getKDV().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100)));
+        product.setTax(category.getTaxPercent().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100), RoundingMode.HALF_EVEN));
         product.setName(requestModel.getName());
         product.setCreatedBy(authenticationService.getCurrentUser());
         product.setUpdatedBy(authenticationService.getCurrentUser());
@@ -47,8 +48,11 @@ public class ProductService {
     }
 
     public List<ProductResponseModel> findAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return products.stream().map(x -> mapper.map(x, ProductResponseModel.class)).collect(Collectors.toList());
+        return productRepository
+                .findAll()
+                .stream()
+                .map(x -> mapper.map(x, ProductResponseModel.class))
+                .collect(Collectors.toList());
     }
 
     public boolean deleteProduct(long id) {
@@ -63,9 +67,14 @@ public class ProductService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found by that id");
         Product product = productRepository.getById(requestModel.getId());
         Category category = categoryRepository.getById(requestModel.getCategoryId());
-        product.setPrice(requestModel.getPriceWithoutTax().add(category.getKDV().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100))));
+        product.setPrice(requestModel.getPriceWithoutTax().add(category.getTaxPercent().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100), RoundingMode.HALF_EVEN)));
         product.setCategory(category);
-        product.setTax(category.getKDV().multiply(requestModel.getPriceWithoutTax()).divide(BigDecimal.valueOf(100)));
+        product.setTax(
+                category
+                        .getTaxPercent()
+                        .multiply(requestModel.getPriceWithoutTax())
+                        .divide(BigDecimal.valueOf(100), RoundingMode.HALF_EVEN)
+        );
         product.setName(requestModel.getName());
         product.setUpdatedBy(authenticationService.getCurrentUser());
         productRepository.save(product);

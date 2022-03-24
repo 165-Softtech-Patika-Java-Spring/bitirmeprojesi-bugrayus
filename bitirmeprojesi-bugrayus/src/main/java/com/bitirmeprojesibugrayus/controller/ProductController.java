@@ -20,36 +20,50 @@ public class ProductController {
 
     @PostMapping("/product")
     public ResponseEntity<ApiResponse<Boolean>> createProduct(@RequestBody CreateProductRequestModel requestModel) {
-        return ResponseEntity.ok(ApiResponse.of(productService.createProduct(requestModel)));
+        return ResponseEntity.ok(ApiResponse.of(
+                productService.createProduct(requestModel)
+        ));
     }
 
     @GetMapping("/product")
     public ResponseEntity<ApiResponse<List<ProductResponseModel>>> findAllProducts() {
-        return ResponseEntity.ok(ApiResponse.of(productService.findAllProducts()));
+        return ResponseEntity.ok(ApiResponse.of(
+                productService.findAllProducts()
+        ));
     }
 
     @GetMapping("/product/id/{id}")
     public ResponseEntity<ApiResponse<ProductResponseModel>> findProductById(@PathVariable long id) {
-        return ResponseEntity.ok(ApiResponse.of(productService.findProductById(id)));
+        return ResponseEntity.ok(ApiResponse.of(
+                productService.findProductById(id)
+        ));
     }
 
-    @GetMapping("/product/category/{categoryId}")
+    @GetMapping("/product/category/id/{categoryId}")
     public ResponseEntity<ApiResponse<List<ProductResponseModel>>> findProductByCategory(@PathVariable long categoryId) {
-        return ResponseEntity.ok(ApiResponse.of(productService.findProductByCategory(categoryId)));
+        return ResponseEntity.ok(ApiResponse.of(
+                productService.findProductByCategory(categoryId)
+        ));
     }
 
     @GetMapping("/product/priceBetween")
-    public ResponseEntity<ApiResponse<List<ProductResponseModel>>> findProductByCategory(@RequestParam BigDecimal priceLow, BigDecimal priceHigh) {
-        return ResponseEntity.ok(ApiResponse.of(productService.findProductByPriceBetween(priceLow, priceHigh)));
+    public ResponseEntity<ApiResponse<List<ProductResponseModel>>> findProductByPriceBetween(@RequestParam BigDecimal priceLow, BigDecimal priceHigh) {
+        return ResponseEntity.ok(ApiResponse.of(
+                productService.findProductByPriceBetween(priceLow, priceHigh)
+        ));
     }
 
     @PutMapping("/product")
     public ResponseEntity<ApiResponse<Boolean>> updateProduct(@RequestBody UpdateProductRequestModel requestModel) {
-        return ResponseEntity.ok(ApiResponse.of(productService.updateProduct(requestModel)));
+        return ResponseEntity.ok(ApiResponse.of(
+                productService.updateProduct(requestModel)
+        ));
     }
 
-    @DeleteMapping("/product/{id}")
+    @DeleteMapping("/product/id/{id}")
     public ResponseEntity<ApiResponse<Boolean>> deleteProduct(@PathVariable long id) {
-        return ResponseEntity.ok(ApiResponse.of(productService.deleteProduct(id)));
+        return ResponseEntity.ok(ApiResponse.of(
+                productService.deleteProduct(id)
+        ));
     }
 }
