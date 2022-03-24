@@ -4,9 +4,6 @@ import com.bitirmeprojesibugrayus.BaseTest;
 import com.bitirmeprojesibugrayus.BitirmeprojesiBugrayusApplication;
 import com.bitirmeprojesibugrayus.config.SQLTestProfileJPAConfig;
 import com.bitirmeprojesibugrayus.model.request.CreateCategoryRequestModel;
-import com.bitirmeprojesibugrayus.model.request.UpdateCategoryRequestModel;
-import com.bitirmeprojesibugrayus.model.response.CategoryResponseModel;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +20,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CategoryControllerTest extends BaseTest {
 
     private static final String BASE_PATH = "/category";
-
 
     private MockMvc mockMvc;
 
@@ -48,72 +45,37 @@ class CategoryControllerTest extends BaseTest {
     @Test
     void createCategory() throws Exception {
         CreateCategoryRequestModel categoryResponseModel = CreateCategoryRequestModel.builder()
-                .name("erhdem")
+                .name("deneme")
                 .taxPercent(BigDecimal.ONE)
                 .build();
-
         String content = objectMapper.writeValueAsString(categoryResponseModel);
-
         MvcResult result = mockMvc.perform(
                 post(BASE_PATH).content(content).contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andReturn();
-
         assertTrue(isSuccess(result));
     }
 
     @Test
-    void findAllCategories() throws Exception{
+    void findAllCategories() throws Exception {
         MvcResult result = mockMvc.perform(
                 get(BASE_PATH).content("").contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andReturn();
-
-        boolean isSuccess = isSuccess(result);
-
-        assertTrue(isSuccess);
+        assertTrue(isSuccess(result));
     }
 
     @Test
-    void findCategoryById() throws Exception{
+    void findCategoryById() throws Exception {
         MvcResult result = mockMvc.perform(
-                get(BASE_PATH + "/1").content("1L").contentType(MediaType.APPLICATION_JSON)
+                get(BASE_PATH + "/id/1").content("1L").contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andReturn();
-
-        boolean isSuccess = isSuccess(result);
-
-        assertTrue(isSuccess);
+        assertTrue(isSuccess(result));
     }
 
     @Test
-    void findCategoryDetails() throws Exception{
-
-    }
-
-    @Test
-    void updateCategory() throws Exception{
-        UpdateCategoryRequestModel updateCategoryRequestModel = new UpdateCategoryRequestModel();
-        updateCategoryRequestModel.setId(2052L);
-        updateCategoryRequestModel.setName("test2");
-        updateCategoryRequestModel.setTaxPercent(BigDecimal.ONE);
-
-        String content = objectMapper.writeValueAsString(updateCategoryRequestModel);
-
+    void findCategoryDetails() throws Exception {
         MvcResult result = mockMvc.perform(
-                put(BASE_PATH).content(content).contentType(MediaType.APPLICATION_JSON)
+                get(BASE_PATH + "/details").content("").contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andReturn();
-
-        boolean isSuccess = isSuccess(result);
-
-        assertTrue(isSuccess);
-    }
-
-    @Test
-    void deleteCategory() throws Exception{
-        MvcResult result = mockMvc.perform(
-                delete(BASE_PATH + "/2202").content("2202").contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk()).andReturn();
-
-        boolean isSuccess = isSuccess(result);
-
-        assertTrue(isSuccess);
+        assertTrue(isSuccess(result));
     }
 }
